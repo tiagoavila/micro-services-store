@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net;
+using Catalog.Application.Dtos;
 using Catalog.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +17,6 @@ namespace Catalog.API.Controllers
             _productAppService = productAppService;
         }
 
-        // GET: api/Product
         [HttpGet]
         public IActionResult Get()
         {
@@ -27,6 +28,20 @@ namespace Catalog.API.Controllers
         public IActionResult Get(Guid id)
         {
             return Ok(_productAppService.GetById(id));
+        }
+
+        [HttpPut("update")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public IActionResult UpdateProduct([FromBody]ProductDto productDto)
+        {
+            var result = _productAppService.Update(productDto);
+            if (result.Success)
+            {
+                return NoContent();
+            }
+
+            return BadRequest(result.Message);
         }
     }
 }

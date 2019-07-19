@@ -1,5 +1,7 @@
-﻿using Catalog.Application.Dtos;
+﻿using Catalog.Application.Common;
+using Catalog.Application.Dtos;
 using Catalog.Application.Interfaces;
+using Catalog.Domain;
 using Catalog.Domain.Interfaces;
 using Omu.ValueInjecter;
 using System;
@@ -33,6 +35,34 @@ namespace Catalog.Application.Services
             }
 
             return productDto;
+        }
+
+        public Result Update(ProductDto productDto)
+        {
+            var product = _productRepository.GetById(productDto.Id);
+            if (product == null)
+            {
+                return new ErrorResult("Product not found");
+            }
+
+            var oldPrice = product.Price;
+            var raiseProductPriceChangedEvent = oldPrice != productDto.Price;
+
+            var productToUpdate = Mapper.Map<Product>(productDto);
+            product = productToUpdate;
+
+            _productRepository.Update(product);
+
+            if (raiseProductPriceChangedEvent)
+            {
+
+            }
+            else
+            {
+                _productRepository.SaveChanges();
+            }
+
+            return new SuccessResult();
         }
     }
 }

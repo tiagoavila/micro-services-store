@@ -1,4 +1,5 @@
-﻿using Catalog.Application.Dtos;
+﻿using Catalog.Application.Common;
+using Catalog.Application.Dtos;
 using System;
 using System.Collections.Generic;
 
@@ -9,5 +10,7 @@ namespace Catalog.Application.Interfaces
         IEnumerable<ProductDto> GetAll();
 
         ProductDto GetById(Guid id);
+
+        Result Update(ProductDto productDto);
     }
 }
